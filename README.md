@@ -58,3 +58,36 @@ Unser System adressiert die primären Schmerzpunkte der zwei Haupt-Stakeholder:
     automatisiert die Inhalte (z. B. die einleitenden Seiten) und generiert direkt passgenaue, maschinenlesbare Vorschläge 
     für Pflichtfelder wie Titel, Beschreibungen und Keywords. Der User muss diese nur noch überprüfen und bestätigen (human in the loop). 
     Das senkt den administrativen Aufwand massiv und sichert langfristig eine hohe, semantisch nutzbare Datenqualität.
+
+## Systemarchitektur & Tech STack
+
+* **Frontend:** React / Typescript
+* **Backend:** Python?
+* **LLM:** `TODO`
+* **Embedding Model:** `TODO`
+* **Vector Store:** `TODO`
+
+## Setup & Installation (How-To)
+
+```{commandline}
+Hier beschreibt ihr in 1-2 Sätzen kurz, welche Voraussetzungen nötig sind (z.B. API-Keys, Node.js, Python-Version) und wie die Jury den Code lokal auf ihrem eigenen Rechner starten kann.
+```
+
+## Roadmap & Future Work
+
+Unser MVP beweist, dass KI-gestützte Metadatengenerierung und hybride Suche die Nutzbarkeit von `data.gv.at` massiv 
+verbessern können. Wenn wir das Projekt weiterentwickeln, stehen folgende Meilensteine im Fokus:
+
+1. **Ausweitung Metadaten-Anreicherung:**
+Aktuell fokussiert sich das Pre-Processing auf textbasierte Dokumente (PDF, DOCX). In Zukunft soll das System beliebige
+Datensätze verarbeiten können – von strukturierten tabellarischen Daten (CSV, Excel) und Geodaten (GeoJSON) bis hin zu 
+unstrukturierten Daten wie Bildern, Audio und Video.
+
+2. **Skalierung auf Bestandsdaten (Human-in-the-loop):**
+Während unser MVP primär beim Upload neuer Daten ansetzt, könnte das System im nächsten Schritt asynchron über die 
+gesamten 68.000+ Bestandsdaten laufen, um fehlende Metadaten im Hintergrund mit KI anzureichern. Ein "Human-in-the-loop"-
+Ansatz stellt dabei sicher, dass Verwaltungsmitarbeiter die KI-Vorschläge vor Veröffentlichung verifizieren.
+
+3. **Lernendes Reranking & Caching:**
+Implementierung eines User-Feedback-Loops direkt in der Suche ("War dieses Ergebnis hilfreich?"). Basierend auf diesem
+impliziten und expliziten Feedback kann der Reranker kontinuierlich nachtrainiert und verbessert werden.
