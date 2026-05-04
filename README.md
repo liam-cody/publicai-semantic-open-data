@@ -91,3 +91,20 @@ Ansatz stellt dabei sicher, dass Verwaltungsmitarbeiter die KI-Vorschläge vor V
 3. **Lernendes Reranking & Caching:**
 Implementierung eines User-Feedback-Loops direkt in der Suche ("War dieses Ergebnis hilfreich?"). Basierend auf diesem
 impliziten und expliziten Feedback kann der Reranker kontinuierlich nachtrainiert und verbessert werden.
+
+## Special Thanks
+
+Ein großes Dankeschön an die **TU Austria** und das **Bundeskanzleramt** für die großartige Organisation des Hackathons 
+und die Möglichkeit, an diesem spannenden Event mitzuwirken. Es hat wirklich Spaß gemacht. 
+
+Ein besonderes Danke auch den Challenge-Ownern und Mentoren für den wertvollen Input, das Feedback und den regelmäßigen Austausch während dieser zwei intensiven Tage:
+
+* **Martin Böhm** (Challenge Owner, BKA)
+* **Michael Reichart** (Technical Expert, BRZ)
+* **Savic Ratko** (Technical Expert, BRZ)
+
+## License & Open Source
+
+Dieses Projekt wurde im Rahmen des Public AI Hackathons für die öffentliche Verwaltung entwickelt und ist vollständig
+Open Source. Es bestehen unsererseits keine urheberrechtlichen Ansprüche (No Copyright Claims) an den hier 
+bereitgestellten Konzepten und Code-Snippets.
