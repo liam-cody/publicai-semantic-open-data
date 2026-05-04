@@ -1,16 +1,60 @@
 # Semantic Open Data
 
-## Challenge Background
+Dieses Projekt entstand im Rahmen des [Public AI Hackathons](https://www.digitalaustria.gv.at/wissenswertes/events/publicaihackathon.html),
+organisiert von der TU Austria in Kooperation mit dem Bundeskanzleramt (BKA). Der Hackathon fand vom 4. bis 5. Mai 2026 
+in Wien statt, um reale Herausforderungen der öffentlichen Verwaltung durch innovative KI-Lösungen zu bewältigen.
 
-`data.gv.at` wird kontinuierlich weiterentwickelt, insbesondere im Bereich der Such- und Navigationsfunktionen. Bestehende Ansätze basieren jedoch überwiegend auf syntaktischen Suchmechanismen und adressieren nur eingeschränkt die semantische Heterogenität der Datensätze sowie die uneinheitliche Qualität der Metadaten.
+## IST-Stand und Projektmotivation
 
-## The ideal result (challenge goal)
+`data.gv.at` ist das zentrale Open-Data-Portal der österreichischen Verwaltung mit über 68.500 Datensätzen von mehr als 
+2.200 Organisationen. Die größte Hürde bei der Nutzung ist die starke Heterogenität der Datenformate und Metadatenqualitäten.
 
-- Entwicklung eines KI-gestützten Such- und Interaktionssystems zur semantischen Erschließung von Datensätzen auf Basis natürlicher Sprache (z.B. Query-Verständnis, semantisches Ranking, Kontextanreicherung).
-- Entwicklung eines KI-gestüzten Unterstützungssystems für dateneinbringende Stellen zur strukturierten Erstellung, Standardisierung und Qualitätssicherung von Metadaten (z.B. Vorschläge für Beschreibungen, Schlagworte, Kategorien
+Bisher scheitert eine effiziente Nutzung oft an fehlender semantischer Strukturierung und uneinheitlichen Beschreibungen. 
+Dies macht die Daten schwer maschinenlesbar und erfordert hohes Domänenwissen von Endnutzern, um relevante Daten 
+überhaupt zu identifizieren und zu vergleichen. Ein niederschwelliger, KI-gestützter Zugang soll dies ändern, um neue 
+Marktchancen für Unternehmen zu eröffnen, Lizenzgebühren zu sparen und Transparenz zu schaffen
 
-## Our approach
+## Zielgruppen und abgeleitete Use-Cases
 
-Wir interpretieren beide Zielsetzungen als Teil eines größeren gemeinsamen Artefakts. Ziel ist die verbesserte Dokumentensuche auf `data.gv.at` zu einer gegebenen textuellen Eingabe. Beim erarbeiten der Problemstellung identifizierten wir folgende Reibungsflächen, die die benutzerfreundlichkeit der Platform einschränken können
+Unser System adressiert die primären Schmerzpunkte der zwei Haupt-Stakeholder:
 
-1. Textsuche mit Elastic Search: 
+### Data Consumers (Unternehmen, Bürger, Unis):
+
+  **Pain Points der aktuellen Plattform:**
+
+  Data Consumers suchen Datensätze über ein Textfeld, das auf einer klassischen Elastic-Search basiert. Da diese Methode primär 
+    auf exaktem Keyword-Matching (z. B. in Titeln) beruht, wird die Semantik der Anfrage nicht verstanden. Wer nicht exakt 
+    den Fachjargon der Verwaltung nutzt, erhält schlechte oder keine Ergebnisse. Zudem scheitert das System an 
+    mehrdimensionalen Suchanfragen.
+
+  **Unsere abgeleiteten Use-Cases:**
+    
+  - **Hybride Suche:** r erweitern das System um einen Hybrid-Ansatz, bei dem die klassische, exakte Textsuche und eine 
+    neue semantische Vektorsuche parallel ausgeführt werden. Während die klassische Suche punktgenau nach Keywords filtert, 
+    liefert die semantische Suche inhaltlich ähnliche Dokumente basierend auf den wichtigsten Metadaten (Titel, 
+    Beschreibung, Keywords). Beide Suchstränge werden anschließend zu einer aggregierten Trefferliste kombiniert. So versteht
+    das System Suchanfragen in natürlicher Sprache, ohne die Präzision exakter Treffer zu opfern.
+    
+    - **Agentic Search für komplexe Queries:** Aktuell ist die Suche singulär. Sucht jemand z. B. nach "Gesundheitsentwicklung 
+    Wiens im Vergleich zum Rauchverhalten", liefert das System keine kombinierten Ergebnisse. Unser Ansatz nutzt einen 
+    KI-Agenten, der solche komplexen Anfragen aufsplittet, mittels Tools iterativ gezielte Suchanfragen an `data.gv.at` stellt 
+    und die relevanten Datensätze intelligent zusammenführt.
+
+    - **LLM-basiertes Reranking:** Nach dem initialen Retrieval (über die Hybrid Search) implementieren wir einen LLM-
+    gestützten Relevanz-Filter (Reranker). Dieser analysiert die Suchergebnisse noch einmal tiefgehend und bringt die 
+    Dokumente ganz nach oben, die den wahren Intent der User-Query am besten bedienen.
+
+### Data Producers (Ämter, Gemeinden, öffentlicher Dienst)
+    
+  **Pain Points der aktuellen Plattform:**
+    
+  Selbst die beste semantische Suche läuft ins Leere, wenn die Datensätze keine oder nur schlechte Metadaten besitzen. Das 
+    manuelle Ausfüllen dieser Felder ist für Verwaltungsmitarbeiter jedoch ein ungeliebter und zeitaufwendiger Prozess.
+    
+  **Unsere abgeleiteter Use-Case:**
+    
+  - **KI-gestützte Metadatengenerierung beim Upload:** Um das Problem mangelhafter Metadaten zu entschärfen, greift unser 
+    System direkt beim Upload-Prozess neuer Daten ein. Bei textbasierten Dokumenten (z. B. PDF, DOCX) analysiert die KI 
+    automatisiert die Inhalte (z. B. die einleitenden Seiten) und generiert direkt passgenaue, maschinenlesbare Vorschläge 
+    für Pflichtfelder wie Titel, Beschreibungen und Keywords. Der User muss diese nur noch überprüfen und bestätigen (human in the loop). 
+    Das senkt den administrativen Aufwand massiv und sichert langfristig eine hohe, semantisch nutzbare Datenqualität.
