@@ -1,0 +1,48 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #0f0f10;
+  color: #e8e8ec;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Spinner animation used in MetadataGeneratorTab */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Loading bar animation used in ResultsColumn */
+@keyframes slideBar {
+  0%   { transform: scaleX(0); transform-origin: left; }
+  50%  { transform: scaleX(1); transform-origin: left; }
+  51%  { transform-origin: right; }
+  100% { transform: scaleX(0); transform-origin: right; }
+}
+
+/* Scrollbar styling for results boxes */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #2e2e34; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #3e3e48; }
+
+/* Focus ring for inputs */
+input:focus {
+  border-color: #5b6af0 !important;
+  outline: none;
+}
+
+/* Hover effect on result cards */
+.result-item:hover {
+  background: #222226;
+}
+
+code {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.9em;
+  color: #7a7a85;
+}

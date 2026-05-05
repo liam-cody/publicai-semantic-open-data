@@ -1,0 +1,33 @@
+# Dependencies
+node_modules
+
+# Build output
+dist
+
+# Environment — never commit real keys
+.env
+.env.*.local
+*.local
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editor / IDE
+.vscode/
+*.swp
+*.swo
+
+# Vite temp files (generated during dev)
+vite.config.ts.timestamp-*
+
+# TypeScript incremental build cache
+*.tsbuildinfo
+
+# Test coverage output
+coverage/
+
+# Large raw data inputs (regenerate with npm run jsonl-to-sample / embed-sample)
+src/data/*.jsonl
+alle_metadaten_stream.jsonl
