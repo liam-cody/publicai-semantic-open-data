@@ -92,7 +92,7 @@ Während unser MVP primär beim Upload neuer Daten ansetzt, könnte das System i
 gesamten 68.000+ Bestandsdaten laufen, um fehlende Metadaten im Hintergrund mit KI anzureichern. Ein "Human-in-the-loop"-
 Ansatz stellt dabei sicher, dass Verwaltungsmitarbeiter die KI-Vorschläge vor Veröffentlichung verifizieren.
 
-4. *Lernendes Reranking & Caching:**
+4. **Lernendes Reranking & Caching:**
 Implementierung eines User-Feedback-Loops direkt in der Suche ("War dieses Ergebnis hilfreich?"). Basierend auf diesem
 impliziten und expliziten Feedback kann der Reranker kontinuierlich nachtrainiert und verbessert werden.
 
