@@ -59,11 +59,11 @@ Unser System adressiert die primären Schmerzpunkte der zwei Haupt-Stakeholder:
     für Pflichtfelder wie Titel, Beschreibungen und Keywords. Der User muss diese nur noch überprüfen und bestätigen (human in the loop). 
     Das senkt den administrativen Aufwand massiv und sichert langfristig eine hohe, semantisch nutzbare Datenqualität.
 
-## Systemarchitektur & Tech STack
+## Systemarchitektur & Tech Stack
 
 * **Frontend:** React / Typescript
 * **Backend:** Python?
-* **LLM:** `TODO`
+* **LLM:** Qwen3-30B-A3B-Instruct-2507
 * **Embedding Model:** `TODO`
 * **Vector Store:** `TODO`
 
