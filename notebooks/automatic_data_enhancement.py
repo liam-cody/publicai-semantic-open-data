@@ -70,7 +70,7 @@ FRONTMATTER_MARKERS = [
     r"\.{5,}",
 ]
 
-
+SKIP_TITLES = []
 # ---------------------------------------------------------------------------
 # JSONL I/O
 # ---------------------------------------------------------------------------
@@ -298,7 +298,109 @@ class QwenSummarizer:
         generated = output_ids[0][input_len:]
         return self.tokenizer.decode(generated, skip_special_tokens=True).strip()
 
+    def keywords(
+            self,
+            text: str,
+            num_keywords: int = 6,
+            output_language: str = "de",
+        ) -> list[str]:
+            """
+            Generate a flat list of keywords/tags from a piece of text.
+            Returns a Python list of strings (already parsed from the model's
+            comma-separated output).
+    
+            num_keywords is treated as a *target*; the model is asked for a
+            5–8 range to give it some flexibility, then the result is trimmed
+            if it overshoots significantly.
+            """
+            # Translate the target into a sensible range for the prompt.
+            lo = max(1, num_keywords - 2)
+            hi = num_keywords + 2
+    
+            if output_language == "de":
+                system = (
+                    "Du extrahierst prägnante Schlagwörter aus deutschsprachigen "
+                    "Texten. Gib ausschließlich die Schlagwörter aus, "
+                    "kommagetrennt, ohne Nummerierung, ohne Erklärung, ohne "
+                    "Anführungszeichen. Behalte deutsche Fachbegriffe bei."
+                )
+                user = (
+                    f"Extrahiere {lo}–{hi} aussagekräftige Schlagwörter "
+                    f"aus dem folgenden Text. Bevorzuge konkrete Substantive, "
+                    f"Eigennamen und Fachbegriffe. Vermeide Füllwörter und "
+                    f"Wiederholungen.\n\n"
+                    f"--- TEXT ---\n{text}\n--- ENDE ---\n\n"
+                    f"Schlagwörter (kommagetrennt):"
+                )
+            else:
+                system = (
+                    "You extract concise keywords from text. Output only the "
+                    "keywords, comma-separated, no numbering, no explanation, "
+                    "no quotes."
+                )
+                user = (
+                    f"Extract {lo}–{hi} meaningful keywords from "
+                    f"the following text. Prefer concrete nouns, proper names, "
+                    f"and domain terms. Avoid filler words and repetition.\n\n"
+                    f"--- TEXT ---\n{text}\n--- END ---\n\n"
+                    f"Keywords (comma-separated):"
+                )
+    
+            messages = [
+                {"role": "system", "content": system},
+                {"role": "user", "content": user},
+            ]
+            prompt = self.tokenizer.apply_chat_template(
+                messages, tokenize=False, add_generation_prompt=True)
+            inputs = self.tokenizer(prompt, return_tensors="pt").to(self.model.device)
+            input_len = inputs.input_ids.shape[1]
+    
+            with self.torch.no_grad():
+                output_ids = self.model.generate(
+                    **inputs,
+                    max_new_tokens=200,    # keywords are short — no need for 1024
+                    do_sample=True,
+                    temperature=0.2,       # even lower than summarization
+                    top_p=0.9,
+                    repetition_penalty=1.1,
+                    pad_token_id=self.tokenizer.eos_token_id,
+                )
+            generated = output_ids[0][input_len:]
+            raw = self.tokenizer.decode(generated, skip_special_tokens=True).strip()
+            parsed = _parse_keywords(raw)
+            # Trim if the model overshot (sometimes happens with low temperature
+            # plus strong examples) — keep the first hi entries.
+            return parsed[:hi]
 
+
+def _parse_keywords(raw: str) -> list[str]:
+    """
+    Robustly parse a model's keyword output into a clean list.
+    Handles: comma-separated, newline-separated, numbered lists, bullet
+    lists, and stray quotes. Deduplicates while preserving order.
+    """
+    if not raw:
+        return []
+    # Strip a leading "Schlagwörter:" / "Keywords:" preamble if present.
+    raw = re.sub(r"^\s*(Schlagw[öo]rter|Keywords)\s*[:\-]\s*", "",
+                 raw, flags=re.IGNORECASE)
+    # Split on commas, newlines, or semicolons.
+    parts = re.split(r"[,;\n]+", raw)
+    keywords: list[str] = []
+    seen: set[str] = set()
+    for part in parts:
+        # Drop list markers like "1.", "2)", "- ", "* ".
+        part = re.sub(r"^\s*(\d+[.)]|\-|\*|•)\s*", "", part)
+        # Drop wrapping quotes.
+        part = part.strip().strip("\"'`")
+        if not part:
+            continue
+        key = part.lower()
+        if key in seen:
+            continue
+        seen.add(key)
+        keywords.append(part)
+    return keywords
 
 def process_entry(
     entry: dict,
@@ -354,6 +456,73 @@ def process_entry(
     out["status"] = "ok"
     return out
 
+def process_entry_keywords(
+    entry: dict,
+    summarizer: QwenSummarizer,
+    source_fields: list[str],
+    num_keywords: int,
+    output_language: str,
+) -> dict:
+    """
+    Generate keywords from one or more existing text fields. The fields
+    listed in `source_fields` are concatenated (in order, separated by
+    newlines) — empty/missing fields are silently skipped.
+    """
+    out = dict(entry)
+    title = entry.get("title", "(untitled)")
+    print(f"  → {title[:70]}")
+
+    pieces: list[str] = []
+    used_fields: list[str] = []
+    for field in source_fields:
+        candidate = entry.get(field)
+        if candidate and str(candidate).strip():
+            pieces.append(str(candidate).strip())
+            used_fields.append(field)
+
+    # Last-resort fallback so we never feed an empty prompt to the model.
+    if not pieces:
+        for fallback in ("summary", "description", "title"):
+            if fallback in source_fields:
+                continue
+            candidate = entry.get(fallback)
+            if candidate and str(candidate).strip():
+                pieces.append(str(candidate).strip())
+                used_fields.append(fallback)
+                break
+
+    if not pieces:
+        out["status"] = "error"
+        out["error"] = "no text in any of: " + ", ".join(source_fields)
+        return out
+
+    text = "\n\n".join(pieces)
+
+    print(f"    Generating ~{num_keywords} keywords from "
+          f"{'+'.join(used_fields)} ({len(text):,} chars) ...")
+    t0 = time.time()
+    try:
+        kws = summarizer.keywords(
+            text,
+            num_keywords=num_keywords,
+            output_language=output_language,
+        )
+    except Exception as e:
+        out["status"] = "error"
+        out["error"] = f"generation failed: {e}"
+        return out
+
+    out["keywords"] = kws
+    out["keywords_source_fields"] = used_fields
+    out["keywords_seconds"] = round(time.time() - t0, 1)
+    out["status"] = "ok"
+    return out
+
+
+def _normalized_skip_set() -> set[str]:
+    """Return SKIP_TITLES normalized for case-insensitive comparison."""
+    return {t.strip().lower() for t in SKIP_TITLES if t.strip()}
+
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
@@ -378,7 +547,38 @@ def main() -> None:
     ap.add_argument("--max-new-tokens", type=int, default=1024)
     ap.add_argument("--english", action="store_true",
                     help="Output summaries in English.")
+    ap.add_argument("--mode", choices=["summarize", "keywords"],
+                    default="summarize",
+                    help="What to do with each entry: 'summarize' downloads "
+                         "the PDF and writes a summary; 'keywords' reads an "
+                         "existing text field and writes a keywords list.")
+    ap.add_argument("--source-field", action="append", default=None,
+                    metavar="FIELD",
+                    help="(keywords mode) JSON field(s) to read text from. "
+                         "Repeat to concatenate multiple fields. "
+                         "Default: --source-field summary --source-field "
+                         "description.")
+    ap.add_argument("--num-keywords", type=int, default=6,
+                    help="(keywords mode) Target keyword count "
+                         "(model is asked for n-2 to n+2; default: 6, "
+                         "giving a 4–8 range).")
+    ap.add_argument("--require-field", metavar="FIELD", default=None,
+                    help="Only process entries that already have this field "
+                         "(e.g. --require-field summary to skip entries "
+                         "without a summary).")
+    ap.add_argument("--skip-if-has-field", metavar="FIELD", default=None,
+                    help="Skip entries that already have this field "
+                         "(e.g. --skip-if-has-field keywords to avoid "
+                         "re-generating keywords).")
+    ap.add_argument("--update-in-place", action="store_true",
+                    help="Read all entries into memory, update matching ones, "
+                         "then rewrite the output file. Use when input == "
+                         "output to avoid creating duplicate records.")
+
     args = ap.parse_args()
+
+    if args.source_field is None:
+        args.source_field = ["summary", "description"]
 
     if not args.input.exists():
         sys.exit(f"Input not found: {args.input}")
@@ -399,34 +599,69 @@ def main() -> None:
     n_total = 0
     n_ok = 0
     n_err = 0
-    with args.output.open("a", encoding="utf-8") as out_f:
-        for i, entry in enumerate(iter_jsonl(args.input), 1):
+
+    def _should_skip(entry: dict) -> bool:
+        key = entry.get("identifier") or entry.get("pdf_url")
+        if key and key in skip_keys:
+            return True
+        if args.require_field and not entry.get(args.require_field):
+            return True
+        if args.skip_if_has_field and entry.get(args.skip_if_has_field):
+            return True
+        return False
+
+    def _run_entry(entry: dict) -> tuple[dict, str]:
+        if args.mode == "summarize":
+            return process_entry(
+                entry, summarizer=summarizer, cache_dir=args.cache_dir,
+                pages_to_summarize=args.pages, output_language=output_language,
+            ), "summary_seconds"
+        else:
+            return process_entry_keywords(
+                entry, summarizer=summarizer, source_fields=args.source_field,
+                num_keywords=args.num_keywords, output_language=output_language,
+            ), "keywords_seconds"
+
+    if args.update_in_place:
+        all_entries = list(iter_jsonl(args.input))
+        for i, entry in enumerate(all_entries):
             if args.limit and n_total >= args.limit:
                 break
-            key = entry.get("identifier") or entry.get("pdf_url")
-            if key and key in skip_keys:
+            if _should_skip(entry):
                 continue
-
             n_total += 1
-            print(f"\n[{n_total}] entry #{i}")
-            result = process_entry(
-                entry,
-                summarizer=summarizer,
-                cache_dir=args.cache_dir,
-                pages_to_summarize=args.pages,
-                output_language=output_language,
-            )
-            out_f.write(json.dumps(result, ensure_ascii=False) + "\n")
-            out_f.flush()   # so you can tail -f the output file
-
+            print(f"\n[{n_total}] entry #{i + 1} / {len(all_entries)}")
+            result, duration_field = _run_entry(entry)
+            all_entries[i] = result
             if result.get("status") == "ok":
                 n_ok += 1
-                print(f"    ✓ done in {result.get('summary_seconds')}s")
+                print(f"    ✓ done in {result.get(duration_field)}s")
             else:
                 n_err += 1
                 print(f"    ✗ {result.get('error')}")
+        with args.output.open("w", encoding="utf-8") as out_f:
+            for record in all_entries:
+                out_f.write(json.dumps(record, ensure_ascii=False) + "\n")
+    else:
+        with args.output.open("a", encoding="utf-8") as out_f:
+            for i, entry in enumerate(iter_jsonl(args.input), 1):
+                if args.limit and n_total >= args.limit:
+                    break
+                if _should_skip(entry):
+                    continue
+                n_total += 1
+                print(f"\n[{n_total}] entry #{i}")
+                result, duration_field = _run_entry(entry)
+                out_f.write(json.dumps(result, ensure_ascii=False) + "\n")
+                out_f.flush()
+                if result.get("status") == "ok":
+                    n_ok += 1
+                    print(f"    ✓ done in {result.get(duration_field)}s")
+                else:
+                    n_err += 1
+                    print(f"    ✗ {result.get('error')}")
 
-    print(f"\nFinished. {n_ok} ok, {n_err} errors, {n_total} total.")
+    print(f"\nFinished. {n_ok} ok, {n_err} errors, {n_total} processed.")
     print(f"Output: {args.output}")
 
 

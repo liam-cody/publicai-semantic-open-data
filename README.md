@@ -67,11 +67,6 @@ Unser System adressiert die primären Schmerzpunkte der zwei Haupt-Stakeholder:
 * **Embedding Model:** Qwen/Qwen3-Embedding-8B
 * **Prompts:**  siehe [Prompts](static/static.yaml)
 
-## Setup & Installation (How-To)
-
-```{commandline}
-Hier beschreibt ihr in 1-2 Sätzen kurz, welche Voraussetzungen nötig sind (z.B. API-Keys, Node.js, Python-Version) und wie die Jury den Code lokal auf ihrem eigenen Rechner starten kann.
-```
 
 ## Roadmap & Future Work
 
@@ -92,17 +87,17 @@ Während unser MVP primär beim Upload neuer Daten ansetzt, könnte das System i
 gesamten 68.000+ Bestandsdaten laufen, um fehlende Metadaten im Hintergrund mit KI anzureichern. Ein "Human-in-the-loop"-
 Ansatz stellt dabei sicher, dass Verwaltungsmitarbeiter die KI-Vorschläge vor Veröffentlichung verifizieren.
 
-4. *Lernendes Reranking & Caching:**
+4. **Lernendes Reranking & Caching:**
 Implementierung eines User-Feedback-Loops direkt in der Suche ("War dieses Ergebnis hilfreich?"). Basierend auf diesem
 impliziten und expliziten Feedback kann der Reranker kontinuierlich nachtrainiert und verbessert werden.
 
 ## Contributors
 
-- Brocza Laurenz
+- Laurenz Brocza 
 - Kenan Ahmic
 - Liam Cody
-- Vizniuk Anastasila
-- Hillebrand Daniel
+- Anastasiia Vozniuk
+- Daniel Hillebrand
 
 ## Special Thanks
 
@@ -113,7 +108,7 @@ Ein besonderes Danke auch den Challenge-Ownern und Mentoren für den wertvollen 
 
 * **Martin Böhm** (Challenge Owner, BKA)
 * **Michael Reichart** (Technical Expert, BRZ)
-* **Ratko Savic** (Technical Expert, BRZ)
+* **Ratko Savic** (Technical Expert, TU Graz)
 
 ## License & Open Source
 
