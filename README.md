@@ -61,11 +61,12 @@ Unser System adressiert die primären Schmerzpunkte der zwei Haupt-Stakeholder:
 
 ## Systemarchitektur & Tech Stack
 
-* **Frontend:** React / Typescript : für Details siehe [Doku](src/Doku_Demo_app.md)
-* **Backend:** Python?
+* **Frontend:** Next.js/Vite : für Details siehe [Doku](src/Doku_Demo_app.md)
+* **Backend:** Python + TypeScript
 * **LLM:** Qwen3-30B-A3B-Instruct-2507
-* **Embedding Model:** `TODO`
+* **Embedding Model:** Qwen/Qwen3-Embedding-8B
 * **Vector Store:** `TODO`
+* **Prompts:**  siehe [Prompts](static/static.yaml)
 
 ## Setup & Installation (How-To)
 
