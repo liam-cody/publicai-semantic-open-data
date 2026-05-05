@@ -67,11 +67,6 @@ Unser System adressiert die primären Schmerzpunkte der zwei Haupt-Stakeholder:
 * **Embedding Model:** Qwen/Qwen3-Embedding-8B
 * **Prompts:**  siehe [Prompts](static/static.yaml)
 
-## Setup & Installation (How-To)
-
-```{commandline}
-Hier beschreibt ihr in 1-2 Sätzen kurz, welche Voraussetzungen nötig sind (z.B. API-Keys, Node.js, Python-Version) und wie die Jury den Code lokal auf ihrem eigenen Rechner starten kann.
-```
 
 ## Roadmap & Future Work
 
