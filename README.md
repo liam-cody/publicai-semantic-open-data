@@ -98,11 +98,11 @@ impliziten und expliziten Feedback kann der Reranker kontinuierlich nachtrainier
 
 ## Contributors
 
-- Brocza Laurenz
+- Laurenz Brocza 
 - Kenan Ahmic
 - Liam Cody
-- Vizniuk Anastasila
-- Hillebrand Daniel
+- Anastasiia Vozniuk
+- Daniel Hillebrand
 
 ## Special Thanks
 
