@@ -108,7 +108,7 @@ Ein besonderes Danke auch den Challenge-Ownern und Mentoren für den wertvollen 
 
 * **Martin Böhm** (Challenge Owner, BKA)
 * **Michael Reichart** (Technical Expert, BRZ)
-* **Ratko Savic** (Technical Expert, BRZ)
+* **Ratko Savic** (Technical Expert, TU Graz)
 
 ## License & Open Source
 
