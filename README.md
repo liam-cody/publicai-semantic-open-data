@@ -61,11 +61,11 @@ Unser System adressiert die primären Schmerzpunkte der zwei Haupt-Stakeholder:
 
 ## Systemarchitektur & Tech Stack
 
-* **Frontend:** React / Typescript : für Details siehe [Doku](src/Doku_Demo_app.md)
-* **Backend:** Python?
+* **Frontend:** Next.js/Vite : für Details siehe [Doku](src/Doku_Demo_app.md)
+* **Backend:** Python + TypeScript
 * **LLM:** Qwen3-30B-A3B-Instruct-2507
-* **Embedding Model:** `TODO`
-* **Vector Store:** `TODO`
+* **Embedding Model:** Qwen/Qwen3-Embedding-8B
+* **Prompts:**  siehe [Prompts](static/static.yaml)
 
 ## Setup & Installation (How-To)
 
@@ -113,7 +113,7 @@ Ein besonderes Danke auch den Challenge-Ownern und Mentoren für den wertvollen 
 
 * **Martin Böhm** (Challenge Owner, BKA)
 * **Michael Reichart** (Technical Expert, BRZ)
-* **Savic Ratko** (Technical Expert, BRZ)
+* **Ratko Savic** (Technical Expert, BRZ)
 
 ## License & Open Source
 
