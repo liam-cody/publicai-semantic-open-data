@@ -29,11 +29,11 @@ Unser System adressiert die primären Schmerzpunkte der zwei Haupt-Stakeholder:
 
   **Unsere abgeleiteten Use-Cases:**
     
-  - **Hybride Suche:** r erweitern das System um einen Hybrid-Ansatz, bei dem die klassische, exakte Textsuche und eine 
+  - **Hybride Suche:** Wir erweitern das System um einen Hybrid-Ansatz, bei dem die klassische, exakte Textsuche und eine 
     neue semantische Vektorsuche parallel ausgeführt werden. Während die klassische Suche punktgenau nach Keywords filtert, 
     liefert die semantische Suche inhaltlich ähnliche Dokumente basierend auf den wichtigsten Metadaten (Titel, 
     Beschreibung, Keywords). Beide Suchstränge werden anschließend zu einer aggregierten Trefferliste kombiniert. So versteht
-    das System Suchanfragen in natürlicher Sprache, ohne die Präzision exakter Treffer zu opfern.
+    das System Suchanfragen in natürlicher Sprache, ohne die Präzision exakter Treffer zu opfern. Weiters unterstützt semantische Suche auch indirekt durch aufbrechen der Sprachbarrieren, weil Semantik unabhängig von der Eingabesprache funktioniert (Französisch, Englisch, ...), was bei textbasierten Ansätzen nicht der Fall ist.
     
     - **Agentic Search für komplexe Queries:** Aktuell ist die Suche singulär. Sucht jemand z. B. nach "Gesundheitsentwicklung 
     Wiens im Vergleich zum Rauchverhalten", liefert das System keine kombinierten Ergebnisse. Unser Ansatz nutzt einen 
