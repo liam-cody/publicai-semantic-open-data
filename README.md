@@ -91,6 +91,9 @@ Ansatz stellt dabei sicher, dass Verwaltungsmitarbeiter die KI-Vorschläge vor V
 Implementierung eines User-Feedback-Loops direkt in der Suche ("War dieses Ergebnis hilfreich?"). Basierend auf diesem
 impliziten und expliziten Feedback kann der Reranker kontinuierlich nachtrainiert und verbessert werden.
 
+## Note: 
+Semantic embeddings repo using 7B vLLM mistral model: https://github.com/kenahm/embeddings_hackaton.
+
 ## Contributors
 
 - Laurenz Brocza 
