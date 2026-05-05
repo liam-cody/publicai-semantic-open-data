@@ -65,7 +65,6 @@ Unser System adressiert die primären Schmerzpunkte der zwei Haupt-Stakeholder:
 * **Backend:** Python + TypeScript
 * **LLM:** Qwen3-30B-A3B-Instruct-2507
 * **Embedding Model:** Qwen/Qwen3-Embedding-8B
-* **Vector Store:** `TODO`
 * **Prompts:**  siehe [Prompts](static/static.yaml)
 
 ## Setup & Installation (How-To)
