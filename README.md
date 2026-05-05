@@ -83,14 +83,26 @@ Aktuell fokussiert sich das Pre-Processing auf textbasierte Dokumente (PDF, DOCX
 Datensätze verarbeiten können – von strukturierten tabellarischen Daten (CSV, Excel) und Geodaten (GeoJSON) bis hin zu 
 unstrukturierten Daten wie Bildern, Audio und Video.
 
-2. **Skalierung auf Bestandsdaten (Human-in-the-loop):**
+2. **LLM-Evaluierung der generierten Metadaten (LLM as a Judge):**
+Aktuell wird die Beurteilung der KI-Generierten Metadaten ausschließlich durch den User durchgeführt, indem er die Eingabe bestätigt.
+Als zusätzliche Qualitätssicherungsmaßnahme könnte der Output vorher durch einen LLM beurteilt werden, um eventuellen Halluzinationen in der Generierung vorzubeugen.
+
+3. **Skalierung auf Bestandsdaten (Human-in-the-loop):**
 Während unser MVP primär beim Upload neuer Daten ansetzt, könnte das System im nächsten Schritt asynchron über die 
 gesamten 68.000+ Bestandsdaten laufen, um fehlende Metadaten im Hintergrund mit KI anzureichern. Ein "Human-in-the-loop"-
 Ansatz stellt dabei sicher, dass Verwaltungsmitarbeiter die KI-Vorschläge vor Veröffentlichung verifizieren.
 
-3. **Lernendes Reranking & Caching:**
+4. *Lernendes Reranking & Caching:**
 Implementierung eines User-Feedback-Loops direkt in der Suche ("War dieses Ergebnis hilfreich?"). Basierend auf diesem
 impliziten und expliziten Feedback kann der Reranker kontinuierlich nachtrainiert und verbessert werden.
+
+## Contributors
+
+- Brocza Laurenz
+- Kenan Ahmic
+- Liam Cody
+- Vizniuk Anastasila
+- Hillebrand Daniel
 
 ## Special Thanks
 
