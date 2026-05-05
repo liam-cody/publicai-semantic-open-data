@@ -61,7 +61,7 @@ Unser System adressiert die primären Schmerzpunkte der zwei Haupt-Stakeholder:
 
 ## Systemarchitektur & Tech Stack
 
-* **Frontend:** React / Typescript : für Details siehe [Doku](scripts/Doku_Demo_app)
+* **Frontend:** React / Typescript : für Details siehe [Doku](src/Doku_Demo_app.md)
 * **Backend:** Python?
 * **LLM:** Qwen3-30B-A3B-Instruct-2507
 * **Embedding Model:** `TODO`
